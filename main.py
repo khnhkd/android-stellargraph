@@ -23,29 +23,21 @@ labels_sampled = labels.sample(frac=0.8, replace=False, random_state=42)
 
 # Create StellarGraph Data Object from above graphs (from_networkx function)
 # m1
-# graph_full_m1 = sg.StellarGraph.from_networkx(G_m1, node_features=X)
-# graph_sampled_m1 = graph_full_m1.subgraph(labels_sampled.index)
 graph_full_m1, graph_sampled_m1 = get_graph_data(G_m1, X, labels_sampled)
 del G_m1
 gc.collect()
 
 # m2
-# graph_full_m2 = sg.StellarGraph.from_networkx(G_m2, node_features=X)
-# graph_sampled_m2 = graph_full_m2.subgraph(labels_sampled.index)
 graph_full_m2, graph_sampled_m2 = get_graph_data(G_m2, X, labels_sampled)
 del G_m2
 gc.collect()
 
 # m3
-# graph_full_m3 = sg.StellarGraph.from_networkx(G_m3, node_features=X)
-# graph_sampled_m3 = graph_full_m3.subgraph(labels_sampled.index)
 graph_full_m3, graph_sampled_m3 = get_graph_data(G_m3, X, labels_sampled)
 del G_m3
 gc.collect()
 
 # m4
-# graph_full_m4 = sg.StellarGraph.from_networkx(G_m4, node_features=X)
-# graph_sampled_m4 = graph_full_m4.subgraph(labels_sampled.index)
 graph_full_m4, graph_sampled_m4 = get_graph_data(G_m4, X, labels_sampled)
 del G_m4
 gc.collect()
@@ -72,102 +64,46 @@ layer_sizes = [64, 32]
 
 # Node Generator
 # m1
-# generator_m1 = GraphSAGENodeGenerator(graph_sampled_m1, batch_size, num_samples, weighted=True)
-# train_gen_m1 = generator_m1.flow(train_labels.index, train_targets, shuffle=True)
-# val_gen_m1 = generator_m1.flow(val_labels.index, val_targets)
 generator_m1, train_gen_m1, val_gen_m1 = node_generator(graph_sampled_m1, train_labels, train_targets, val_labels,
                                                         val_targets, batch_size, num_samples)
 
 # m2
-# generator_m2 = GraphSAGENodeGenerator(graph_sampled_m2, batch_size, num_samples, weighted=True)
-# train_gen_m2 = generator_m2.flow(train_labels.index, train_targets, shuffle=True)
-# val_gen_m2 = generator_m2.flow(val_labels.index, val_targets)
 generator_m2, train_gen_m2, val_gen_m2 = node_generator(graph_sampled_m2, train_labels, train_targets, val_labels,
                                                         val_targets, batch_size, num_samples)
 
 # m3
-# generator_m3 = GraphSAGENodeGenerator(graph_sampled_m3, batch_size, num_samples, weighted=True)
-# train_gen_m3 = generator_m3.flow(train_labels.index, train_targets, shuffle=True)
-# val_gen_m3 = generator_m3.flow(val_labels.index, val_targets)
 generator_m3, train_gen_m3, val_gen_m3 = node_generator(graph_sampled_m3, train_labels, train_targets, val_labels,
                                                         val_targets, batch_size, num_samples)
 
 # m4
-# generator_m4 = GraphSAGENodeGenerator(graph_sampled_m4, batch_size, num_samples, weighted=True)
-# train_gen_m4 = generator_m4.flow(train_labels.index, train_targets, shuffle=True)
-# val_gen_m4 = generator_m4.flow(val_labels.index, val_targets)
 generator_m4, train_gen_m4, val_gen_m4 = node_generator(graph_sampled_m4, train_labels, train_targets, val_labels,
                                                         val_targets, batch_size, num_samples)
 
 for dropout in [0.1]:
     for lr in [0.003]:
         # m1
-        # graphsage_model_m1 = GraphSAGE(
-        #     layer_sizes=layer_sizes, generator=generator_m1, bias=True, dropout=dropout,
-        # )
-        # x_inp_m1, x_out_m1 = graphsage_model_m1.in_out_tensors()
-        # prediction_m1 = layers.Dense(units=train_targets.shape[1], activation="softmax")(x_out_m1)
         x_inp_m1, prediction_m1 = get_x_in_prediction(generator_m1, train_targets, layer_sizes, dropout)
 
         # m2
-        # graphsage_model_m2 = GraphSAGE(
-        #     layer_sizes=layer_sizes, generator=generator_m2, bias=True, dropout=dropout,
-        # )
-        # x_inp_m2, x_out_m2 = graphsage_model_m2.in_out_tensors()
-        # prediction_m2 = layers.Dense(units=train_targets.shape[1], activation="softmax")(x_out_m2)
         x_inp_m2, prediction_m2 = get_x_in_prediction(generator_m2, train_targets, layer_sizes, dropout)
 
         # m3
-        # graphsage_model_m3 = GraphSAGE(
-        #     layer_sizes=layer_sizes, generator=generator_m3, bias=True, dropout=dropout,
-        # )
-        # x_inp_m3, x_out_m3 = graphsage_model_m3.in_out_tensors()
-        # prediction_m3 = layers.Dense(units=train_targets.shape[1], activation="softmax")(x_out_m3)
         x_inp_m3, prediction_m3 = get_x_in_prediction(generator_m3, train_targets, layer_sizes, dropout)
 
         # m4
-        # graphsage_model_m4 = GraphSAGE(
-        #     layer_sizes=layer_sizes, generator=generator_m4, bias=True, dropout=dropout,
-        # )
-        # x_inp_m4, x_out_m4 = graphsage_model_m4.in_out_tensors()
-        # prediction_m4 = layers.Dense(units=train_targets.shape[1], activation="softmax")(x_out_m4)
         x_inp_m4, prediction_m4 = get_x_in_prediction(generator_m3, train_targets, layer_sizes, dropout)
 
         # Model
         # m1
-        # model_m1 = Model(inputs=x_inp_m1, outputs=prediction_m1)
-        # model_m1.compile(
-        #     optimizer=optimizers.Adam(learning_rate=lr),
-        #     loss=losses.categorical_crossentropy,
-        #     metrics=["acc"],
-        # )
         model_m1 = get_model(x_inp_m1, prediction_m1, lr)
 
         # m2
-        # model_m2 = Model(inputs=x_inp_m2, outputs=prediction_m2)
-        # model_m2.compile(
-        #     optimizer=optimizers.Adam(learning_rate=lr),
-        #     loss=losses.categorical_crossentropy,
-        #     metrics=["acc"],
-        # )
         model_m2 = get_model(x_inp_m2, prediction_m2, lr)
 
         # m3
-        # model_m3 = Model(inputs=x_inp_m3, outputs=prediction_m3)
-        # model_m3.compile(
-        #     optimizer=optimizers.Adam(learning_rate=lr),
-        #     loss=losses.categorical_crossentropy,
-        #     metrics=["acc"],
-        # )
         model_m3 = get_model(x_inp_m3, prediction_m3, lr)
 
         # m4
-        # model_m4 = Model(inputs=x_inp_m4, outputs=prediction_m4)
-        # model_m4.compile(
-        #     optimizer=optimizers.Adam(learning_rate=lr),
-        #     loss=losses.categorical_crossentropy,
-        #     metrics=["acc"],
-        # )
         model_m4 = get_model(x_inp_m4, prediction_m4, lr)
 
         # Combine 4 Model
