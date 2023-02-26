@@ -4,4 +4,3 @@ matplotlib
 pandas
 stellargraph[demos]==1.2.1
 chardet
-khanhkd1
