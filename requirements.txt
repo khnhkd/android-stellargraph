@@ -1,0 +1,7 @@
+numpy==1.21.6
+networkx
+matplotlib
+pandas
+stellargraph[demos]==1.2.1
+chardet
+khanhkd1
